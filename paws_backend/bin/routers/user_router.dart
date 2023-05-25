@@ -4,15 +4,13 @@ import '../middlewares/check_token_middleware.dart';
 import '../responses/user_responses/read_profile_response.dart';
 import '../responses/user_responses/read_favorites_response.dart';
 import '../responses/user_responses/update_profile_response.dart';
-import 'post_routers/post_router.dart';
 
 class UserRouter {
   Handler get handler {
     final router = Router()
       ..get("/read_profile", readProfileHandler)
       ..put("/update_profile", updateProfileHandler)
-      ..get("/read_favorites", readFavoritesHandler)
-      ..mount("/post", PostRouter().handler);
+      ..get("/read_favorites", readFavoritesHandler);
 
     final pipline =
         Pipeline().addMiddleware(checkTokenMiddleware()).addHandler(router);
