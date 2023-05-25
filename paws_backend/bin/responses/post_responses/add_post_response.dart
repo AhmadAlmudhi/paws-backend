@@ -1,5 +1,5 @@
 import 'package:shelf/shelf.dart';
 
-Response addPostHandler(Request _) {
-  return Response.ok('add post is working!');
+Response createPostHandler(Request _) {
+  return Response.ok('create post is working!');
 }

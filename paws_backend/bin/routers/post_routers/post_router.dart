@@ -9,7 +9,7 @@ import 'favorites_router.dart';
 class PostRouter {
   Router get handler {
     final router = Router()
-      ..post("/create", addPostHandler)
+      ..post("/create", createPostHandler)
       ..get("/read_all", readAllPostsHandler)
       ..get("/read/<id>", readPostHandler)
       ..delete('/delete/<id>', deletePostHandler)
