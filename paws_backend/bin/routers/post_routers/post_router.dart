@@ -1,5 +1,5 @@
 import 'package:shelf_router/shelf_router.dart';
-import '../../responses/post_responses/add_post_response.dart';
+import '../../responses/post_responses/create_post_response.dart';
 import '../../responses/post_responses/delete_post_response.dart';
 import '../../responses/post_responses/read_all_posts_response.dart';
 import '../../responses/post_responses/read_post_response.dart';
