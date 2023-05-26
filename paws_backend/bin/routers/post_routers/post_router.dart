@@ -13,9 +13,9 @@ class PostRouter {
     final router = Router()
       ..post("/create", createPostHandler)
       ..get("/read_all", readAllPostsHandler)
-      ..get("/read/<id>", readPostHandler)
-      ..delete('/delete/<id>', deletePostHandler)
-      ..get("/share", sharePostHandler)
+      ..get("/read/<post_id>", readPostHandler)
+      ..delete('/delete/<post_id>', deletePostHandler)
+      ..get("/share/<post_id>", sharePostHandler)
       ..mount("/favorites", FavoritesRouter().handler);
     final pipline =
         Pipeline().addMiddleware(checkTokenMiddleware()).addHandler(router);

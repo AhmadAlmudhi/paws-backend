@@ -7,7 +7,7 @@ class FavoritesRouter {
   Router get handler {
     final router = Router()
       ..post("/add/<post_id>", addToFavoritesHandler)
-      ..delete("remove/<post_id>", removeFromFavoritesHandler)
+      ..delete("/remove/<post_id>", removeFromFavoritesHandler)
       ..get('/get_number/<post_id>', getFavoritesNumberHandler);
 
     return router;
