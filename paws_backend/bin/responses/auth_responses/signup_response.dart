@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:shelf/shelf.dart';
 import 'package:supabase/supabase.dart';
-import '../../Model/UserModel.dart';
+import '../../models/user_model.dart';
 import '../../response_messages/bad_request.dart';
 import '../../response_messages/created.dart';
 import '../../services/supabase/supabase_env.dart';
@@ -9,8 +9,10 @@ import '../../services/supabase/supabase_env.dart';
 Future<Response> signupHandler(Request req) async {
   try {
     final body = json.decode(await req.readAsString());
-    final supabaseVariable = SupabaseEnv().supabase.auth;
-    final supabase = SupabaseEnv().supabase.from("users").select();
+    final supabase = SupabaseEnv().supabase;
+    final supabaseVariable = supabase.auth;
+    final fromUsers = supabase.from("users");
+    final selectFromUsers = fromUsers.select();
 
     // check if the user has entered valid values.
     if (body.keys.toString() != "(username, email, password, name, phone)") {
@@ -18,8 +20,8 @@ Future<Response> signupHandler(Request req) async {
     }
 
 //Checking if the email and username are registered before
-    var checkemail = await supabase.eq("email", body["email"]);
-    var checkuser = await supabase.eq("username", body["username"]);
+    var checkemail = await selectFromUsers.eq("email", body["email"]);
+    var checkuser = await selectFromUsers.eq("username", body["username"]);
 
     if (checkemail.isNotEmpty) {
       return BadRequest().responseMessage(
@@ -49,25 +51,17 @@ Future<Response> signupHandler(Request req) async {
       phone: body["phone"]!,
     );
 
-    await SupabaseEnv()
-        .supabase
-        .from("users")
-        .insert(userObject.profileToMap());
+    await fromUsers.insert(userObject.profileToMap());
 
-    final result = await SupabaseEnv()
-        .supabase
-        .from("users")
-        .select("user_id")
-        .eq("email", body["email"]);
+    final result = await fromUsers.select("user_id").eq("email", body["email"]);
 
     final iduser = result[0]["user_id"];
 
-    await SupabaseEnv()
-        .supabase
+    await supabase
         .from("details")
         .insert({"user_id": iduser, ...userObject.detailsToMap()});
 
-    await SupabaseEnv().supabase.from("contacts").insert([
+    await supabase.from("contacts").insert([
       {"user_id": iduser, ...userObject.contactToMap()},
     ]);
 
@@ -83,6 +77,10 @@ Future<Response> signupHandler(Request req) async {
   } on AuthException {
     return BadRequest().responseMessage(
       message: "sorry error ! $AuthException ",
+    );
+  } catch (error) {
+    return BadRequest().responseMessage(
+      message: "sorry error ! $error ",
     );
   }
 }

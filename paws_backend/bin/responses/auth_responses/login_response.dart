@@ -1,15 +1,11 @@
 import 'dart:convert';
-
 import 'package:shelf/shelf.dart';
-
 import '../../response_messages/bad_request.dart';
 import '../../response_messages/success.dart';
 import '../../services/supabase/supabase_env.dart';
 
 Future<Response> loginHandler(Request req) async {
 //login and take the token to check in middleware
-
-
   try {
     final body = json.decode(await req.readAsString());
 
@@ -25,8 +21,9 @@ Future<Response> loginHandler(Request req) async {
     );
 
     return Success().responseMessage(
-        message: "you login successfully  ",
-        data: {"TOKEN": userLogin.session?.accessToken},);
+      message: "you login successfully  ",
+      data: {"TOKEN": userLogin.session?.accessToken},
+    );
   } catch (error) {
     return BadRequest().responseMessage(message: "login error !");
   }
