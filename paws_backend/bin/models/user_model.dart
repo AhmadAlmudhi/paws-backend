@@ -14,7 +14,7 @@ class UserModel {
   final List? favorites;
 
   UserModel({
-    required this.userId,
+    this.userId,
     required this.username,
     required this.name,
     required this.email,
