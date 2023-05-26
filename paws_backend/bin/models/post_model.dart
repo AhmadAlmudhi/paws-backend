@@ -31,7 +31,7 @@ class PostModel {
       "content": content,
       "images": images,
       "status": status ?? "not adopted",
-      "time": time ?? DateTime.now(),
+      "time": time ?? DateTime.now().toIso8601String(),
       "favorites_number": favoritesNumber ?? 0,
     };
 
