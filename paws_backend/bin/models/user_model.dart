@@ -18,16 +18,16 @@ class UserModel {
     required this.username,
     required this.name,
     required this.email,
+    required this.phone,
+    required this.authId,
     this.image,
     this.bio,
-    required this.phone,
     this.age,
     this.whatsapp,
     this.country,
     this.city,
     this.gender,
     this.favorites,
-    required this.authId,
   });
 
   factory UserModel.fromJson({required Map json}) {
@@ -49,22 +49,45 @@ class UserModel {
     );
   }
 
-  toMap() {
+  profileToMap() {
     final jsonMap = {
-      "user_id": userId,
       "username": username,
       "name": name,
       "email": email,
-      "image": image,
-      "bio": bio,
-      "phone": phone,
-      "age": age,
-      "whatsapp": whatsapp,
-      "country": country,
-      "city": city,
-      "gender": gender,
-      "favorites": favorites,
       "auth_id": authId,
+      "image": image ?? "default image",
+      "bio": bio ?? "empty",
+      "favorites": favorites ?? [],
+    };
+
+    if (userId == null) {
+      return jsonMap;
+    }
+
+    return {"user_id": userId, ...jsonMap};
+  }
+
+  contactToMap() {
+    final jsonMap = {
+      "email": email,
+      "phone": phone,
+      "whatsapp": whatsapp ?? phone,
+    };
+
+    if (userId == null) {
+      return jsonMap;
+    }
+
+    return {"user_id": userId, ...jsonMap};
+  }
+
+  detailsToMap() {
+    final jsonMap = {
+      "phone": phone,
+      "age": age ?? 0,
+      "country": country ?? "empty",
+      "city": city ?? "empty",
+      "gender": gender ?? "empty",
     };
 
     if (userId == null) {

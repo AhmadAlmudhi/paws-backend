@@ -5,12 +5,12 @@ class PostModel {
 
   PostModel({
     required this.userId,
-    required this.postId,
     required this.content,
-    required this.status,
-    required this.time,
-    required this.favoritesNumber,
     required this.images,
+    this.postId,
+    this.status,
+    this.time,
+    this.favoritesNumber,
   });
 
   factory PostModel.fromJson({required Map json}) {
@@ -28,12 +28,11 @@ class PostModel {
   toMap() {
     final jsonMap = {
       "user_id": userId,
-      "post_id": userId,
-      "content": userId,
-      "status": userId,
-      "time": userId,
-      "favorites_number": userId,
-      "images": userId,
+      "content": content,
+      "images": images,
+      "status": status ?? "not adopted",
+      "time": time ?? DateTime.now(),
+      "favorites_number": favoritesNumber ?? 0,
     };
 
     if (postId == null) {
