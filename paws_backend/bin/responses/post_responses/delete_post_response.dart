@@ -10,29 +10,38 @@ Future<Response> deletePostHandler(Request req, String postId) async {
 
     final jwt = JWT.decode(req.headers["authorization"]!);
     final authId = jwt.payload["sub"];
+    final fromPosts = supabase.from("posts");
 
-    final userId = ((await supabase
+    final usersUserId = ((await supabase
         .from("users")
         .select("user_id")
         .eq("auth_id", authId))[0]["user_id"]);
 
-    final deletedPost = await supabase
-        .from("posts")
-        .delete()
-        .eq("post_id", postId)
-        .eq("user_id", userId)
-        .select();
+    final postUserId =
+        (await fromPosts.select("user_id").eq("post_id", postId))[0]["user_id"];
 
-    final deletedAnimal =
-        await supabase.from("animals").delete().eq("post_id", postId).select();
+    if (usersUserId == postUserId) {
+      final deletedPost =
+          await fromPosts.delete().eq("post_id", postId).select();
 
-    return Success().responseMessage(
-      message: "Post created!",
-      data: {
-        "deleted post data": [deletedPost[0]],
-        "deleted animal data": [deletedAnimal[0]],
-      },
-    );
+      final deletedAnimal = await supabase
+          .from("animals")
+          .delete()
+          .eq("post_id", postId)
+          .select();
+
+      return Success().responseMessage(
+        message: "Post created!",
+        data: {
+          "deleted post data": [deletedPost[0]],
+          "deleted animal data": [deletedAnimal[0]],
+        },
+      );
+    } else {
+      return BadRequest().responseMessage(
+        message: "something went wrong!",
+      );
+    }
   } catch (error) {
     return BadRequest().responseMessage(
       message: "sorry error ! $error ",
