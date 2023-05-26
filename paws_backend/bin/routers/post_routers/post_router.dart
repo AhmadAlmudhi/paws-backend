@@ -1,4 +1,6 @@
+import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
+import '../../middlewares/check_token_middleware.dart';
 import '../../responses/post_responses/create_post_response.dart';
 import '../../responses/post_responses/delete_post_response.dart';
 import '../../responses/post_responses/read_all_posts_response.dart';
@@ -7,7 +9,7 @@ import '../../responses/post_responses/share_post_response.dart';
 import 'favorites_router.dart';
 
 class PostRouter {
-  Router get handler {
+  Handler get handler {
     final router = Router()
       ..post("/create", createPostHandler)
       ..get("/read_all", readAllPostsHandler)
@@ -15,7 +17,9 @@ class PostRouter {
       ..delete('/delete/<id>', deletePostHandler)
       ..get("/share", sharePostHandler)
       ..mount("/favorites", FavoritesRouter().handler);
+    final pipline =
+        Pipeline().addMiddleware(checkTokenMiddleware()).addHandler(router);
 
-    return router;
+    return pipline;
   }
 }
