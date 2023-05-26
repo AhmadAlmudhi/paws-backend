@@ -5,7 +5,7 @@ create table users (
   name varchar(30),
   email varchar(40),
   bio text,
-  favorites text[],
+  favorites int[],
   image text,
   auth_id uuid not null,
   FOREIGN KEY (auth_id) REFERENCES auth.users(id)
