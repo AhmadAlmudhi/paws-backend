@@ -7,17 +7,35 @@ import '../../services/supabase/supabase_env.dart';
 
 readProfileHandler(Request req) async{
   try{
-    final header = req.headers;
+  final header = req.headers;
+  final supabase = SupabaseEnv().supabase;
+  final selectUser = supabase.from("users");
+  final jwt = JWT.decode(header['authorization']!);
+  final userAuth = jwt.payload["sub"];
 
-  final jwt = JWT.decode(header['authorization']!.toString().trim());
+  final id = await selectUser.select("user_id").eq("auth_id", userAuth);
 
-  final user = (await SupabaseEnv()
-      .supabase
-      .from("user")
+  final user = (await supabase
+      .from("users")
       .select()
-      .eq("authId", jwt.payload["sub"]))[0];
+      .eq("auth_id", userAuth))[0];
 
-      return Success().responseMessage(message: 'here is your profile', data: user);
+  final details = (await supabase
+      .from("details")
+      .select()
+      .eq("user_id", id[0]["user_id"]))[0];
+
+  final contact = (await supabase
+      .from("contacts")
+      .select()
+      .eq("user_id", id[0]["user_id"]))[0];
+
+  Map userMap = {
+      ...user,...details,
+      "contact": contact,
+    };
+
+      return Success().responseMessage(message: 'here is your profile', data: userMap);
   }catch(error){
     print(error);
 
