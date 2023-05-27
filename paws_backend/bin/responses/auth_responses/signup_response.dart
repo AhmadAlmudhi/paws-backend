@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:shelf/shelf.dart';
 import 'package:supabase/supabase.dart';
-
-import '../../Model/user_model.dart';
+import '../../models/user_model.dart';
 import '../../response_messages/bad_request.dart';
 import '../../response_messages/created.dart';
 import '../../services/supabase/supabase_env.dart';
