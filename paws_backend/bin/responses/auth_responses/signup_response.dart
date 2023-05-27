@@ -6,6 +6,9 @@ import '../../response_messages/bad_request.dart';
 import '../../response_messages/created.dart';
 import '../../services/supabase/supabase_env.dart';
 
+// check
+
+//if you change email and keep the other info the same , will accept even the user
 Future<Response> signupHandler(Request req) async {
   try {
     final body = json.decode(await req.readAsString());
@@ -16,22 +19,21 @@ Future<Response> signupHandler(Request req) async {
 
     // check if the user has entered valid values.
     if (body.keys.toString() != "(username, email, password, name, phone)") {
-      return BadRequest().responseMessage(message: "Invalid input!");
+      return BadRequest().responseMessage(message: "Invalid input! ");
     }
 
 //Checking if the email and username are registered before
+
     var checkemail = await selectFromUsers.eq("email", body["email"]);
     var checkuser = await selectFromUsers.eq("username", body["username"]);
-
-    if (checkemail.isNotEmpty) {
-      return BadRequest().responseMessage(
-        message: "email address has already been registered ",
-      );
-    }
-
     if (checkuser.isNotEmpty) {
       return BadRequest().responseMessage(
         message: "username has already been registered ",
+      );
+    }
+    if (checkemail.isNotEmpty) {
+      return BadRequest().responseMessage(
+        message: "email address has already been registered ",
       );
     }
 
@@ -44,7 +46,7 @@ Future<Response> signupHandler(Request req) async {
 
     final idAuth = info.user?.id;
     UserModel userObject = UserModel(
-      username: body["name"]!,
+      username: body["username"]!,
       name: body["name"]!,
       email: info.user!.email!,
       authId: idAuth,
@@ -68,7 +70,7 @@ Future<Response> signupHandler(Request req) async {
     await supabaseVariable.signInWithOtp(email: body["email"]);
 
     return Created().responseMessage(
-      message: "create account page ",
+      message: "The account has been created ",
       data: {
         "name": body["name"],
         "user ID": idAuth,

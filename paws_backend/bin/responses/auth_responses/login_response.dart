@@ -25,6 +25,6 @@ Future<Response> loginHandler(Request req) async {
       data: {"TOKEN": userLogin.session?.accessToken},
     );
   } catch (error) {
-    return BadRequest().responseMessage(message: "login error !");
+    return BadRequest().responseMessage(message: "login error ! $error");
   }
 }

@@ -5,6 +5,8 @@ import '../../response_messages/bad_request.dart';
 import '../../response_messages/success.dart';
 import '../../services/supabase/supabase_env.dart';
 
+// check
+
 verifyHandler(Request req) async {
   try {
     final body = json.decode(await req.readAsString());
@@ -16,6 +18,6 @@ verifyHandler(Request req) async {
 
     return Success().responseMessage(message: "Email is confirm");
   } catch (error) {
-    return BadRequest().responseMessage(message: "Email not confirm!");
+    return BadRequest().responseMessage(message: "Email not confirm! $error");
   }
 }
