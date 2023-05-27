@@ -1,6 +1,7 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:shelf/shelf.dart';
 import '../../../response_messages/bad_request.dart';
+import '../../../response_messages/not_found.dart';
 import '../../../response_messages/success.dart';
 import '../../../services/supabase/supabase_env.dart';
 
@@ -17,9 +18,17 @@ Future<Response> toggleFavoriteHandler(Request req, String postId) async {
         .select("favorites")
         .eq("auth_id", authId))[0]["favorites"]);
 
-    int favoritesNumber = (await fromPosts
+    List favoritesNumberList = (await fromPosts
         .select("favorites_number")
-        .eq("post_id", int.parse(postId)))[0]["favorites_number"];
+        .eq("post_id", int.parse(postId)));
+
+    if (favoritesNumberList.isEmpty) {
+      return NotFound().responseMessage(
+        message: "Post not found!",
+      );
+    }
+
+    int favoritesNumber = favoritesNumberList[0]["favorites_number"];
 
     String msg = "post has been removed from favorites!";
 
