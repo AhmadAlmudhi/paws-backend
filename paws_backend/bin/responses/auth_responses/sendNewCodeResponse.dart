@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:shelf/shelf.dart';
 
 import '../../response_messages/bad_request.dart';
@@ -7,29 +8,32 @@ import '../../services/supabase/supabase_env.dart';
 
 //check
 
-forgotPasswordHandler(Request req) async {
+sendNewCodeSignUp(Request req) async {
   try {
     final body = json.decode(await req.readAsString());
     final supabase = SupabaseEnv().supabase;
 
-    if (body['email'] == null) {
+    if (body["email"] == null) {
       return BadRequest().responseMessage(
-        message: " add email please",
+        message: "add email please",
       );
     }
+
     var byEmail =
         await supabase.from("users").select().eq("email", body["email"]);
 
     if (byEmail.isNotEmpty) {
-      await supabase.auth.resetPasswordForEmail(body['email']);
+      await supabase.auth.signInWithOtp(email: body["email"]);
 
       return Success().responseMessage(
-        message: "check your email to get verify code",
+        message: "sendNewCodeSignUp",
         data: {"email": body['email']},
       );
     }
 
-    return BadRequest().responseMessage(message: "email not found !");
+    return BadRequest().responseMessage(
+      message: "email not found !  ",
+    );
   } catch (error) {
     return BadRequest().responseMessage(message: " error !! $error");
   }

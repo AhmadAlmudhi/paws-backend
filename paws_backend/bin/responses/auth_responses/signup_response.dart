@@ -1,35 +1,40 @@
 import 'dart:convert';
 import 'package:shelf/shelf.dart';
 import 'package:supabase/supabase.dart';
-import '../../Model/UserModel.dart';
+
+import '../../Model/user_model.dart';
 import '../../response_messages/bad_request.dart';
 import '../../response_messages/created.dart';
 import '../../services/supabase/supabase_env.dart';
 
+// check
+
+//if you change email and keep the other info the same , will accept even the user
 Future<Response> signupHandler(Request req) async {
   try {
     final body = json.decode(await req.readAsString());
-    final supabaseVariable = SupabaseEnv().supabase.auth;
-    final supabase = SupabaseEnv().supabase.from("users").select();
+    final supabase = SupabaseEnv().supabase;
+    final supabaseVariable = supabase.auth;
+    final fromUsers = supabase.from("users");
+    final selectFromUsers = fromUsers.select();
 
     // check if the user has entered valid values.
     if (body.keys.toString() != "(username, email, password, name, phone)") {
-      return BadRequest().responseMessage(message: "Invalid input!");
+      return BadRequest().responseMessage(message: "Invalid input! ");
     }
 
 //Checking if the email and username are registered before
-    var checkemail = await supabase.eq("email", body["email"]);
-    var checkuser = await supabase.eq("username", body["username"]);
 
-    if (checkemail.isNotEmpty) {
-      return BadRequest().responseMessage(
-        message: "email address has already been registered ",
-      );
-    }
-
+    var checkemail = await selectFromUsers.eq("email", body["email"]);
+    var checkuser = await selectFromUsers.eq("username", body["username"]);
     if (checkuser.isNotEmpty) {
       return BadRequest().responseMessage(
         message: "username has already been registered ",
+      );
+    }
+    if (checkemail.isNotEmpty) {
+      return BadRequest().responseMessage(
+        message: "email address has already been registered ",
       );
     }
 
@@ -42,39 +47,31 @@ Future<Response> signupHandler(Request req) async {
 
     final idAuth = info.user?.id;
     UserModel userObject = UserModel(
-      username: body["name"]!,
+      username: body["username"]!,
       name: body["name"]!,
       email: info.user!.email!,
       authId: idAuth,
       phone: body["phone"]!,
     );
 
-    await SupabaseEnv()
-        .supabase
-        .from("users")
-        .insert(userObject.profileToMap());
+    await fromUsers.insert(userObject.profileToMap());
 
-    final result = await SupabaseEnv()
-        .supabase
-        .from("users")
-        .select("user_id")
-        .eq("email", body["email"]);
+    final result = await fromUsers.select("user_id").eq("email", body["email"]);
 
     final iduser = result[0]["user_id"];
 
-    await SupabaseEnv()
-        .supabase
+    await supabase
         .from("details")
         .insert({"user_id": iduser, ...userObject.detailsToMap()});
 
-    await SupabaseEnv().supabase.from("contacts").insert([
+    await supabase.from("contacts").insert([
       {"user_id": iduser, ...userObject.contactToMap()},
     ]);
 
     await supabaseVariable.signInWithOtp(email: body["email"]);
 
     return Created().responseMessage(
-      message: "create account page ",
+      message: "The account has been created ",
       data: {
         "name": body["name"],
         "user ID": idAuth,
@@ -83,6 +80,10 @@ Future<Response> signupHandler(Request req) async {
   } on AuthException {
     return BadRequest().responseMessage(
       message: "sorry error ! $AuthException ",
+    );
+  } catch (error) {
+    return BadRequest().responseMessage(
+      message: "sorry error ! $error ",
     );
   }
 }
