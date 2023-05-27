@@ -1,6 +1,7 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:shelf/shelf.dart';
 import '../../response_messages/bad_request.dart';
+import '../../response_messages/not_found.dart';
 import '../../response_messages/success.dart';
 import '../../services/supabase/supabase_env.dart';
 
@@ -17,10 +18,16 @@ Future<Response> deletePostHandler(Request req, String postId) async {
         .select("user_id")
         .eq("auth_id", authId))[0]["user_id"]);
 
-    final postUserId =
-        (await fromPosts.select("user_id").eq("post_id", postId))[0]["user_id"];
+    final List postUserId =
+        (await fromPosts.select("user_id").eq("post_id", postId));
 
-    if (usersUserId == postUserId) {
+    if (postUserId.isEmpty) {
+      return NotFound().responseMessage(
+        message: "Post not found!",
+      );
+    }
+
+    if (usersUserId == postUserId[0]["user_id"]) {
       final deletedPost =
           await fromPosts.delete().eq("post_id", postId).select();
 
@@ -31,7 +38,7 @@ Future<Response> deletePostHandler(Request req, String postId) async {
           .select();
 
       return Success().responseMessage(
-        message: "Post created!",
+        message: "Post got deleted!",
         data: {
           "deleted post data": [deletedPost[0]],
           "deleted animal data": [deletedAnimal[0]],

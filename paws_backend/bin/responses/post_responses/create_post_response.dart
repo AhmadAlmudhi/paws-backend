@@ -23,7 +23,7 @@ Future<Response> createPostHandler(Request req) async {
     PostModel postObject = PostModel(
       userId: userId,
       content: body["content"] ?? "content",
-      images: ["image 1", "image 2", "image 3"],
+      images: body["images"],
     );
 
     final postId = (await supabase
@@ -33,15 +33,15 @@ Future<Response> createPostHandler(Request req) async {
 
     AnimalModel animalObject = AnimalModel(
       postId: postId,
-      name: "boby",
-      type: "type",
-      breed: "breed",
-      color: "black",
-      gender: "male",
-      age: 6,
-      microchipped: true,
-      vaccinated: true,
-      fixed: false,
+      name: body["name"],
+      type: body["type"],
+      breed: body["breed"],
+      color: body["color"],
+      gender: body["gender"],
+      age: body["age"],
+      microchipped: body["microchipped"],
+      vaccinated: body["vaccinated"],
+      fixed: body["fixed"],
     );
 
     await supabase.from("animals").insert(animalObject.toMap());
