@@ -12,7 +12,7 @@ class UserRouter {
       ..get("/read_profile", readProfileHandler)
       ..put("/update_profile", updateProfileHandler)
       ..get("/read_favorites", readFavoritesHandler)
-      ..post("/d", addProfileImage);
+      ..post("/add_image", addProfileImage);
 
     final pipline =
         Pipeline().addMiddleware(checkTokenMiddleware()).addHandler(router);
