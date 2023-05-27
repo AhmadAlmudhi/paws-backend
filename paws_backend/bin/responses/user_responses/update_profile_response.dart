@@ -46,7 +46,10 @@ updateProfileHandler(Request req) async{
       message: "profile has been updated",
       data: {"updated profile": updated},
     );
-  } catch (error) {
+  }on RangeError{
+    return BadRequest().responseMessage(message: "invalid input");
+  }
+   catch (error) {
     print(error);
 
     return BadRequest().responseMessage(message: "something went wrong");
