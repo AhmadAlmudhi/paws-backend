@@ -1,6 +1,7 @@
 import 'package:shelf_router/shelf_router.dart';
 import '../responses/auth_responses/forgot_password_response.dart';
 import '../responses/auth_responses/logout_response.dart';
+import '../responses/auth_responses/send_new_code_response.dart';
 import '../responses/auth_responses/signup_response.dart';
 import '../responses/auth_responses/login_response.dart';
 import '../responses/auth_responses/update_password_response.dart';
@@ -13,6 +14,7 @@ class AuthRouter {
       ..post("/verify", verifyHandler)
       ..post("/login", loginHandler)
       ..post("/forgot_password", forgotPasswordHandler)
+      ..post("/resend_code", sendNewCodeSignUp)
       ..put("/update_password", updatePasswordHandler)
       ..get("/logout", logoutHandler);
 

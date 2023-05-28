@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:shelf/shelf.dart';
 
 import '../../response_messages/bad_request.dart';
+import '../../response_messages/not_found.dart';
 import '../../response_messages/success.dart';
 import '../../services/supabase/supabase_env.dart';
 
@@ -31,7 +32,7 @@ sendNewCodeSignUp(Request req) async {
       );
     }
 
-    return BadRequest().responseMessage(
+    return NotFound().responseMessage(
       message: "email not found !  ",
     );
   } catch (error) {
