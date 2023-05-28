@@ -55,7 +55,8 @@ class UserModel {
       "name": name,
       "email": email,
       "auth_id": authId,
-      "image": image ?? "default image",
+      "image": image ??
+          "https://ugyetukhwfmbnopxgjoi.supabase.co/storage/v1/object/public/imageProfile/images/default.png",
       "bio": bio ?? "empty",
       "favorites": favorites ?? [],
     };

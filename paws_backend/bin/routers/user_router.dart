@@ -1,7 +1,7 @@
 import 'package:shelf/shelf.dart';
 import 'package:shelf_router/shelf_router.dart';
 import '../middlewares/check_token_middleware.dart';
-import '../responses/user_responses/add_profile_image.dart';
+import '../responses/user_responses/update_profile_image.dart';
 import '../responses/user_responses/read_profile_response.dart';
 import '../responses/user_responses/read_favorites_response.dart';
 import '../responses/user_responses/update_profile_response.dart';
@@ -12,7 +12,7 @@ class UserRouter {
       ..get("/read_profile", readProfileHandler)
       ..put("/update_profile", updateProfileHandler)
       ..get("/read_favorites", readFavoritesHandler)
-      ..post("/add_image", addProfileImage);
+      ..put("/update_image", updateProfileImage);
 
     final pipline =
         Pipeline().addMiddleware(checkTokenMiddleware()).addHandler(router);

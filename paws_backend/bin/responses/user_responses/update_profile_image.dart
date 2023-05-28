@@ -1,5 +1,3 @@
-
-
 import 'dart:io';
 
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
@@ -9,22 +7,28 @@ import '../../response_messages/bad_request.dart';
 import '../../response_messages/success.dart';
 import '../../services/supabase/supabase_env.dart';
 
-addProfileImage(Request req) async {
-  try{
-  final byte = await req.read().expand((element) => element).toList();
-  final userInfo = JWT.decode(req.headers["authorization"]!);
-  final image = await createImage(byte: byte);
-  final hasImage = await checkImageProfile(idAuth: userInfo.payload["sub"]);
-  final url =
-      await uploadImage(file: image, found: hasImage, id: userInfo.payload["sub"]);
-  await image.delete();
-  await sendURL(url: url,idAuth:userInfo.payload["sub"]);
+updateProfileImage(Request req) async {
+  try {
+    final byte = await req.read().expand((element) => element).toList();
+    final userInfo = JWT.decode(req.headers["authorization"]!);
+    final image = await createImage(byte: byte);
+    final hasImage = await checkImageProfile(idAuth: userInfo.payload["sub"]);
+    final url = await uploadImage(
+      file: image,
+      found: hasImage,
+      id: userInfo.payload["sub"],
+    );
+    await image.delete();
+    await sendURL(url: url, idAuth: userInfo.payload["sub"]);
 
-  return Success().responseMessage(message: "upload done");
-}catch(error){
-  return BadRequest().responseMessage(message: "something went wrong");
+    return Success().responseMessage(message: "upload done");
+  } catch (error) {
+    print(error);
+
+    return BadRequest().responseMessage(message: "something went wrong");
+  }
 }
-}
+
 //create image inside project directory then return file
 Future<File> createImage({required List<int> byte}) async {
   final file = File("bin/image/test.png");
@@ -50,6 +54,7 @@ checkImageProfile({required String idAuth}) async {
     }
   }
   print("-----checkImageProfile---");
+
   return false;
 }
 
@@ -66,7 +71,7 @@ uploadImage({
   } else {
     await supabase.upload('images/$id.png', file);
   }
-  final url = await supabase.getPublicUrl('images/$id.png');
+  final url = supabase.getPublicUrl('images/$id.png');
   print("-----uploadImage---");
 
   return url;
@@ -74,7 +79,7 @@ uploadImage({
 
 //send url to table image in database
 
-sendURL({ required String url,required String idAuth}) async {
+sendURL({required String url, required String idAuth}) async {
   final supabase = SupabaseEnv().supabase.from("users");
 
   final result = await supabase.update({"image": url}).eq("auth_id", idAuth);
@@ -83,14 +88,12 @@ sendURL({ required String url,required String idAuth}) async {
   return result;
 }
 
-//for delete image fromn server
+//for delete image from server
 
 deleteImageProfile({required String imageName}) async {
-  final listImage = await SupabaseEnv()
+  await SupabaseEnv()
       .supabase
       .storage
       .from("imageProfile")
       .remove(["images/$imageName"]);
-
-  return false;
 }
