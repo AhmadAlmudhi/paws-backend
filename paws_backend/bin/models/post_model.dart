@@ -1,5 +1,5 @@
 class PostModel {
-  final String? content, status, time, favoritesNumber;
+  final String? content, status, time, favoritesNumber, postType;
   final int? postId, userId;
   final List? images;
 
@@ -7,6 +7,7 @@ class PostModel {
     required this.userId,
     required this.content,
     required this.images,
+    required this.postType,
     this.postId,
     this.status,
     this.time,
@@ -18,6 +19,7 @@ class PostModel {
       userId: json["user_id"],
       postId: json["post_id"],
       content: json["content"],
+      postType: json["post_type"],
       status: json["status"],
       time: json["time"],
       favoritesNumber: json["favorites_number"],
@@ -29,6 +31,7 @@ class PostModel {
     final jsonMap = {
       "user_id": userId,
       "content": content,
+      "post_type": postType,
       "images": images,
       "status": status ?? "not adopted",
       "time": time ?? DateTime.now().toIso8601String(),

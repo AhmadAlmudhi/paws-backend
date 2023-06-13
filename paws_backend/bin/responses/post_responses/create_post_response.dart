@@ -23,6 +23,7 @@ Future<Response> createPostHandler(Request req) async {
     PostModel postObject = PostModel(
       userId: userId,
       content: body["content"] ?? "content",
+      postType: body["post_type"],
       images: body["images"],
     );
 
