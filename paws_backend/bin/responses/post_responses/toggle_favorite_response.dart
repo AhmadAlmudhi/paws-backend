@@ -1,9 +1,9 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:shelf/shelf.dart';
-import '../../../response_messages/bad_request.dart';
-import '../../../response_messages/not_found.dart';
-import '../../../response_messages/success.dart';
-import '../../../services/supabase/supabase_env.dart';
+import '../../response_messages/bad_request.dart';
+import '../../response_messages/not_found.dart';
+import '../../response_messages/success.dart';
+import '../../services/supabase/supabase_env.dart';
 
 Future<Response> toggleFavoriteHandler(Request req, String postId) async {
   try {
