@@ -18,7 +18,7 @@ Future<Response> signupHandler(Request req) async {
     final selectFromUsers = fromUsers.select();
 
     // check if the user has entered valid values.
-    if (body.keys.toString() != "(username, email, password, name, phone)") {
+    if (body.keys.toString() != "(email, password, username, name, phone)") {
       return BadRequest().responseMessage(message: "Invalid input! ");
     }
 
@@ -72,7 +72,7 @@ Future<Response> signupHandler(Request req) async {
     return Created().responseMessage(
       message: "The account has been created ",
       data: {
-        "name": body["name"],
+        "email": body["email"],
         "user ID": idAuth,
       },
     );
