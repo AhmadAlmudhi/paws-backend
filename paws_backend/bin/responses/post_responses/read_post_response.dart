@@ -21,9 +21,9 @@ Future<Response> readPostHandler(Request _, String postId) async {
     return Success().responseMessage(
       message: "success",
       data: {
-        "user_info:": [userInfo],
-        "post_info:": [postValues],
-        "animal_info:": [animalInfo],
+        "user_info": [userInfo],
+        "post_info": [postValues],
+        "animal_info": [animalInfo],
       },
     );
   } catch (error) {
