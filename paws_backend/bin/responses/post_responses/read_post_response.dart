@@ -12,7 +12,7 @@ Future<Response> readPostHandler(Request _, String postId) async {
 
     final Map userInfo = (await supabase
         .from("users")
-        .select("name, username, image")
+        .select("name, username, image, user_id")
         .eq("user_id", postValues["user_id"]))[0];
 
     final Map animalInfo =
