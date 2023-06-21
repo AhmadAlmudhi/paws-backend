@@ -50,7 +50,7 @@ Future<Response> createPostHandler(Request req) async {
       breed: body["breed"],
       color: body["color"],
       gender: body["gender"],
-      age: body["age"],
+      age: int.parse(body["age"]),
       microchipped: body["microchipped"],
       vaccinated: body["vaccinated"],
       fixed: body["fixed"],
