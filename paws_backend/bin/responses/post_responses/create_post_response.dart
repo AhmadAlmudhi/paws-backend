@@ -6,8 +6,6 @@ import '../../models/post_model.dart';
 import '../../response_messages/bad_request.dart';
 import '../../response_messages/created.dart';
 import '../../services/supabase/supabase_env.dart';
-import 'dart:io';
-import 'dart:math';
 
 Future<Response> createPostHandler(Request req) async {
   try {
@@ -22,19 +20,11 @@ Future<Response> createPostHandler(Request req) async {
         .select("user_id")
         .eq("auth_id", authId))[0]["user_id"]);
 
-    List images = body["images"];
-    List imagesLinks = [];
-
-    for (var image in images) {
-      String link = await uploadImage(byte: image);
-      imagesLinks.add(link);
-    }
-
     PostModel postObject = PostModel(
       userId: userId,
       content: body["content"] ?? "content",
       postType: body["post_type"],
-      images: imagesLinks,
+      images: body["images"],
       status: body["post_type"] == "offer" ? "not adopted" : "requested",
     );
 
@@ -66,31 +56,10 @@ Future<Response> createPostHandler(Request req) async {
       },
     );
   } catch (error) {
+    print(error);
+
     return BadRequest().responseMessage(
       message: "sorry error ! $error ",
     );
   }
-}
-
-//-------------------------------------------
-
-Future<String> uploadImage({required List<int> byte}) async {
-  final file = File("bin/image/test.png");
-  await file.writeAsBytes(byte);
-
-  int random = 1 + Random().nextInt((1000000000 + 1) - 1);
-
-  await SupabaseEnv()
-      .supabase
-      .storage
-      .from("imageProfile")
-      .upload('images/$random.png', file);
-
-  final url = SupabaseEnv()
-      .supabase
-      .storage
-      .from("imageProfile")
-      .getPublicUrl('images/$random.png');
-
-  return url;
 }

@@ -31,6 +31,8 @@ Future<Response> readAllPostsHandler(Request _) async {
       data: {"posts": result},
     );
   } catch (error) {
+    print(error);
+
     return NotFound().responseMessage(message: "posts not found");
   }
 }

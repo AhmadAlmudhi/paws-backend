@@ -3,6 +3,7 @@ import 'package:shelf_router/shelf_router.dart';
 import '../middlewares/check_token_middleware.dart';
 import '../responses/post_responses/create_post_response.dart';
 import '../responses/post_responses/delete_post_response.dart';
+import '../responses/post_responses/get_image_url_response.dart';
 import '../responses/post_responses/toggle_favorite_response.dart';
 import '../responses/post_responses/read_all_posts_response.dart';
 import '../responses/post_responses/read_post_response.dart';
@@ -12,6 +13,7 @@ class PostRouter {
   Handler get handler {
     final router = Router()
       ..post("/create", createPostHandler)
+      ..post("/get_image_url", getImageUrlHandler)
       ..get("/read_all", readAllPostsHandler)
       ..get("/read/<post_id>", readPostHandler)
       ..delete('/delete/<post_id>', deletePostHandler)
