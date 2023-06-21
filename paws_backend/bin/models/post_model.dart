@@ -8,8 +8,8 @@ class PostModel {
     required this.content,
     required this.images,
     required this.postType,
+    required this.status,
     this.postId,
-    this.status,
     this.time,
     this.favoritesNumber,
   });
